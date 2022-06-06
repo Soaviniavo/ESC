@@ -7,6 +7,7 @@ app.use(express.json());
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
+const extractRoutes = require('./routes/extract');
 
 app.use((req,res,next) => {
     res.setHeader('Access-Control-Allow-Origin','*');
@@ -21,5 +22,6 @@ app.use((req,res,next) => {
 
 app.use(authRoutes,"/auth");
 app.use(userRoutes,"/user");
+app.use(extractRoutes,"/data");
 
 module.exports = app ; 

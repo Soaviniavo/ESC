@@ -7,7 +7,7 @@ module.exports = class user{
         this.email = email;
         this.password = password ; 
         this.role = role ; 
-        this.matricule ; 
+        this.matricule = matricule ; 
         this.date = date ; 
         this.status = status ; 
     }; 
