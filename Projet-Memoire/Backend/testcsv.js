@@ -37,9 +37,7 @@ function checkNoData(filename) {
   }
 }
 
-console.log(checkFileAgreg("TableauAggregation_22-08-2021.csv"));
-console.log(checkFileTrans("TableauTransaction_24-08-2021.csv"));
-console.log(checkFileAppro("TableauApprovisionnement_24-08-2021.csv"));
+
 
 let directory_name = "../../../TestFichier/Fichier";
 
