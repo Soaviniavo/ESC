@@ -15,6 +15,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 router.post("/extract", extractController.Extract);
+router.use("/annuler", extractController.Annuler);
 router.post("/uploads", upload.array("files"), extractController.uploads);
 router.use(extractController.verify);
 

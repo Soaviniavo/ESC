@@ -30,10 +30,11 @@ exports.uploads = (req, res, next) => {
       checkFileAppro(file.originalname) ||
       checkFileTrans(file.originalname)
     ) {
+      const query = "SELECT * FROM files WHERE FILE_NAME = ? ";
       console.log(`ok => ${file.originalname}`);
     } else {
       ErrorFileName.push(
-        `Nom de Fichier Incorrect!! : [${file.originalname}] Rectifiez l'erreur puis recommencer! `
+        `Nom de Fichier Incorrect!! : [${file.originalname}] => Rectifiez l'erreur puis recommencer!! `
       );
     }
   });
@@ -52,13 +53,33 @@ exports.verify = (req, res, next) => {
         console.error(err);
       }
     });
-    res.status(401).json({ message: ErrorFileName });
+    res.status(401).json({
+      message: ErrorFileName,
+      nbrError: ErrorFileName.length,
+    });
   } else {
     const files = req.files;
+    let nbrFileTrans = 0;
+    let nbrFileAgreg = 0;
+    let nbrFileAppro = 0;
+
     files.forEach((file) => {
+      //Compter le nombre de chaque Type de Fichier
+      if (checkFileAgreg(file.originalname)) {
+        nbrFileAgreg++;
+      } else if (checkFileAppro(file.originalname)) {
+        nbrFileAppro++;
+      } else if (checkFileTrans(file.originalname)) {
+        nbrFileTrans++;
+      }
       AllFileName.push(`${file.originalname}`);
     });
-    res.status(200).json({ message: AllFileName });
+    res.status(200).json({
+      message: AllFileName,
+      nbrTrans: nbrFileTrans,
+      nbrAgreg: nbrFileAgreg,
+      nbrAppro: nbrFileAppro,
+    });
   }
   AllFileName.length = 0;
   ErrorFileName.length = 0;
@@ -106,8 +127,26 @@ exports.Extract = (req, res, next) => {
 
     res.json({ error: ErrorFileName });
   }
-  //(()) res.status(201).json("ok extract ");
+ 
 };
+
+
+
+exports.Annuler = (req, res, next) => {
+  let directory_name = "uploads";
+  let filenames = fs.readdirSync(directory_name);
+  filenames.forEach((file) => {
+    try {
+      fs.unlinkSync(`uploads/${file}`)
+      //file removed
+      } catch(err) {
+        console.error(err)
+      }
+ });
+ console.log("okkk");
+ res.status(200).json({ message: "Action annuler!"});
+}
+
 
 // verifier s' il y a des données ou pas
 function checkNoData(filename) {
@@ -124,16 +163,3 @@ function checkNoData(filename) {
   }
 }
 
-/* if(ErrorFileName.length >0){
-        res.json({ error: ErrorFileName });
-        filenames.forEach((file) => {
-          try {
-            fs.unlinkSync(`uploads/${file}`)
-            //file removed
-            } catch(err) {
-              console.error(err)
-            }
-       });
-       throw 'break' ; 
-       
-      }*/
